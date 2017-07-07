@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">News App</string>
+    <string name="no_internet_connection">No internet connection available</string>
+    <string name="no_books">No books were found</string>
+    <string name="query_parameter">q</string>
+    <string name="search_button">SEARCH</string>
+    <string name="enter_search_query">Enter search query</string>
+</resources>
