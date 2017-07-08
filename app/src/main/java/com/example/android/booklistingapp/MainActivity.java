@@ -25,13 +25,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     // loader id
     private static final int DATA_LOADER_ID = 1;
-
+    // connection vars
+    ConnectivityManager connectManager;
+    NetworkInfo networkInfo;
+    LoaderManager loaderManager;
     // query keyword
     private String mKeyword = "";
-
     // list adapter
     private DataAdapter mAdapter;
-
     // different views
     private TextView mEmptyStateTextView;
     private EditText mEditText;
@@ -56,27 +57,37 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getLoaderManager().restartLoader(DATA_LOADER_ID, null, MainActivity.this);
+                connectManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                networkInfo = connectManager.getActiveNetworkInfo();
+                if (networkInfo != null && networkInfo.isConnected()) {
+                    getLoaderManager().restartLoader(DATA_LOADER_ID, null, MainActivity.this);
+                } else {
+                    mAdapter.clear();
+                    View loadingIndicator = findViewById(R.id.loading_indicator);
+                    loadingIndicator.setVisibility(View.GONE);
+                    mEmptyStateTextView.setText(R.string.no_internet_connection);
+                }
             }
         });
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Data currentData = mAdapter.getItem(position);
-                Uri dataUri = Uri.parse(currentData.getmUrl());
-                Intent websiteIntent = new Intent(Intent.ACTION_VIEW, dataUri);
-                startActivity(websiteIntent);
+                connectManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                networkInfo = connectManager.getActiveNetworkInfo();
+                if (networkInfo != null && networkInfo.isConnected()) {
+                    Data currentData = mAdapter.getItem(position);
+                    Uri dataUri = Uri.parse(currentData.getmUrl());
+                    Intent websiteIntent = new Intent(Intent.ACTION_VIEW, dataUri);
+                    startActivity(websiteIntent);
+                }
             }
         });
 
-        ConnectivityManager connectManager = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo networkInfo = connectManager.getActiveNetworkInfo();
-
+        connectManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        networkInfo = connectManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            LoaderManager loaderManager = getLoaderManager();
+            loaderManager = getLoaderManager();
             loaderManager.initLoader(DATA_LOADER_ID, null, this);
         } else {
             View loadingIndicator = findViewById(R.id.loading_indicator);
@@ -111,6 +122,5 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoaderReset(Loader<List<Data>> loader) {
         mAdapter.clear();
-        getLoaderManager().restartLoader(DATA_LOADER_ID, null, MainActivity.this);
     }
 }

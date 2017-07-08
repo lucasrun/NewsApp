@@ -76,7 +76,7 @@ public final class DataUtils {
                 Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
             }
         } catch (IOException e) {
-            Log.e(LOG_TAG, "Problem retrieving the earthquake JSON results.", e);
+            Log.e(LOG_TAG, "Problem retrieving the JSON results.", e);
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -111,33 +111,48 @@ public final class DataUtils {
 
         try {
             JSONObject books = new JSONObject(dataJSON);
-            JSONArray items = books.getJSONArray("items");
+            if (books.has("items")) {
+                JSONArray items = books.getJSONArray("items");
+                for (int i = 0; i < items.length(); i++) {
 
-            for (int i = 0; i < items.length(); i++) {
+                    String title = "";
+                    String authors = "";
+                    String link = "";
+                    String description = "";
 
-                String title = "";
-                String authors = "";
-                String link = "";
-                String description = "";
+                    // JSON single book
+                    JSONObject bookInfo = items.getJSONObject(i);
 
-                // JSON single book
-                JSONObject bookInfo = items.getJSONObject(i);
-                JSONObject volumeInfoJson = bookInfo.getJSONObject("volumeInfo");
+                    if (bookInfo.has("volumeInfo")) {
+                        JSONObject volumeInfo = bookInfo.getJSONObject("volumeInfo");
 
-                title = volumeInfoJson.getString("title");
-                description = volumeInfoJson.getString("description");
-                link = volumeInfoJson.getString("infoLink");
+                        if (volumeInfo.has("title")) {
+                            title = volumeInfo.getString("title");
+                        } else title = "Title N/A";
 
-                JSONArray authorsArray = volumeInfoJson.getJSONArray("authors");
-                for (int j = 0; j < authorsArray.length(); j++) {
-                    if (j == 0) {
-                        authors += authorsArray.getString(j);
-                    } else {
-                        authors += ", " + authorsArray.getString(j);
+                        if (volumeInfo.has("description")) {
+                            description = volumeInfo.getString("description");
+                        } else description = "Description N/A";
+
+                        if (volumeInfo.has("infoLink")) {
+                            link = volumeInfo.getString("infoLink");
+                        } else link = "";
+
+                        if (volumeInfo.has("authors")) {
+                            JSONArray authorsArray = volumeInfo.getJSONArray("authors");
+                            for (int j = 0; j < authorsArray.length(); j++) {
+                                if (j == 0) {
+                                    authors += authorsArray.getString(j);
+                                } else {
+                                    authors += ", " + authorsArray.getString(j);
+                                }
+                            }
+                        } else {
+                            authors = "Authors N/A";
+                        }
                     }
+                    data.add(new Data(title, authors, link, description));
                 }
-                data.add(new Data(title, authors, link, description));
-
             }
         } catch (JSONException e) {
             Log.e("DataUtils", "Problem parsing the data JSON results", e);
