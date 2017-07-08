@@ -5,20 +5,18 @@ package com.example.android.newsapp;
  */
 
 public class Data {
-    String mAuthor;
+    String mSection;
     String mTitle;
     String mUrl;
-    String mDescription;
 
-    public Data(String mAuthor, String mTitle, String mUrl, String mDescription) {
-        this.mAuthor = mAuthor;
+    public Data(String mSection, String mTitle, String mUrl) {
+        this.mSection = mSection;
         this.mTitle = mTitle;
         this.mUrl = mUrl;
-        this.mDescription = mDescription;
     }
 
-    public String getmAuthor() {
-        return mAuthor;
+    public String getmSection() {
+        return mSection;
     }
 
     public String getmTitle() {
@@ -27,9 +25,5 @@ public class Data {
 
     public String getmUrl() {
         return mUrl;
-    }
-
-    public String getmDescription() {
-        return mDescription;
     }
 }

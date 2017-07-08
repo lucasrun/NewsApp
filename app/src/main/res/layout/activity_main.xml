@@ -31,12 +31,12 @@
             android:id="@+id/editTV"
             style="@style/generalView"
             android:gravity="center"
-            android:hint="@string/enter_search_query" />
+            android:hint="@string/hint" />
 
         <Button
             android:id="@+id/buttonTV"
             style="@style/generalView"
-            android:text="@string/search_button" />
+            android:text="@string/refresh_button" />
 
         <ListView
             android:id="@+id/listTV"

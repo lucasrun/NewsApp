@@ -30,13 +30,11 @@ public class DataAdapter extends ArrayAdapter<Data> {
 
         Data currentData = getItem(position);
 
-        TextView authorTV = (TextView) listItemView.findViewById(R.id.authorTV);
+        TextView sectionTV = (TextView) listItemView.findViewById(R.id.sectionTV);
         TextView titleTV = (TextView) listItemView.findViewById(R.id.titleTV);
-        TextView descriptionTV = (TextView) listItemView.findViewById(R.id.descriptionTV);
 
-        authorTV.setText(currentData.getmAuthor());
+        sectionTV.setText(currentData.getmSection());
         titleTV.setText(currentData.getmTitle());
-        descriptionTV.setText(currentData.getmDescription());
 
         return listItemView;
     }

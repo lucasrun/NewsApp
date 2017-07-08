@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         loadingIndicator.setVisibility(View.GONE);
 
         // clearing adapter
-        mEmptyStateTextView.setText(R.string.no_books);
+        mEmptyStateTextView.setText(R.string.no_news);
         mAdapter.clear();
 
         // filling adapter
