@@ -54,6 +54,27 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mAdapter = new DataAdapter(this, new ArrayList<Data>());
         mListView.setAdapter(mAdapter);
 
+        initConnectionManager();
+
+        initButtonClickListener();
+
+        initListClickListener();
+    }
+
+    private void initConnectionManager() {
+        connectManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        networkInfo = connectManager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            loaderManager = getLoaderManager();
+            loaderManager.initLoader(DATA_LOADER_ID, null, this);
+        } else {
+            View loadingIndicator = findViewById(R.id.loading_indicator);
+            loadingIndicator.setVisibility(View.GONE);
+            mEmptyStateTextView.setText(R.string.no_internet_connection);
+        }
+    }
+
+    private void initButtonClickListener() {
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,7 +90,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 }
             }
         });
+    }
 
+    private void initListClickListener() {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -83,17 +106,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 }
             }
         });
-
-        connectManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        networkInfo = connectManager.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            loaderManager = getLoaderManager();
-            loaderManager.initLoader(DATA_LOADER_ID, null, this);
-        } else {
-            View loadingIndicator = findViewById(R.id.loading_indicator);
-            loadingIndicator.setVisibility(View.GONE);
-            mEmptyStateTextView.setText(R.string.no_internet_connection);
-        }
     }
 
     // loader instances

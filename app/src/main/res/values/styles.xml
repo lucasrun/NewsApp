@@ -35,7 +35,7 @@
     <style name="customView">
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:textSize">15sp</item>
-        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_height">25dp</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_weight">1</item>
@@ -44,7 +44,7 @@
     <style name="titleView">
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textSize">15sp</item>
-        <item name="android:layout_height">100dp</item>
+        <item name="android:layout_height">50dp</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_weight">1</item>

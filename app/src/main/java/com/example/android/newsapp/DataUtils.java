@@ -24,7 +24,24 @@ import java.util.List;
 
 public final class DataUtils {
 
-    // tag for log messages
+    public static final String SECTION_NAME = "sectionName";
+    public static final String SECTION_N_A = "Section N/A";
+    public static final String WEB_TITLE = "webTitle";
+    public static final String WEB_URL = "webUrl";
+    public static final String TITLE_N_A = "Title N/A";
+    public static final String PROBLEM_PARSING_THE_DATA_JSON_RESULTS = "Problem parsing the data JSON results";
+    public static final String RESULTS = "results";
+    public static final String RESPONSE = "response";
+    public static final String PROBLEM_RETRIEVING_THE_JSON_RESULTS = "Problem retrieving the JSON results.";
+    public static final String ERROR_RESPONSE_CODE = "Error response code: ";
+    public static final int TIMEOUT = 10000;
+    public static final int CONNECT_TIMEOUT = 15000;
+    public static final String REQUEST_METHOD = "GET";
+    public static final String HTTP_ENTRY_URL = "http://content.guardianapis.com/search?q=";
+    public static final String API_KEY_TEST = "&api-key=test";
+    public static final String PROBLEM_BUILDING_THE_URL = "Problem building the URL ";
+    public static final String PROBLEM_MAKING_THE_HTTP_REQUEST = "Problem making the HTTP request.";
+    public static final String DATA_UTILS = "DataUtils";
     private static final String LOG_TAG = DataUtils.class.getSimpleName();
 
     private DataUtils() {
@@ -36,7 +53,7 @@ public final class DataUtils {
         try {
             jsonResponse = makeHttpRequest(url);
         } catch (IOException e) {
-            Log.e(LOG_TAG, "Problem making the HTTP request.", e);
+            Log.e(LOG_TAG, PROBLEM_MAKING_THE_HTTP_REQUEST, e);
         }
 
         List<Data> data = extractJSON(jsonResponse);
@@ -46,9 +63,9 @@ public final class DataUtils {
     private static URL createUrl(String mKeyword) {
         URL url = null;
         try {
-            url = new URL("http://content.guardianapis.com/search?q=" + mKeyword + "&api-key=test");
+            url = new URL(HTTP_ENTRY_URL + mKeyword + API_KEY_TEST);
         } catch (MalformedURLException e) {
-            Log.e(LOG_TAG, "Problem building the URL ", e);
+            Log.e(LOG_TAG, PROBLEM_BUILDING_THE_URL, e);
         }
         return url;
     }
@@ -64,19 +81,19 @@ public final class DataUtils {
         InputStream inputStream = null;
         try {
             urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setReadTimeout(10000);
-            urlConnection.setConnectTimeout(15000);
-            urlConnection.setRequestMethod("GET");
+            urlConnection.setReadTimeout(TIMEOUT);
+            urlConnection.setConnectTimeout(CONNECT_TIMEOUT);
+            urlConnection.setRequestMethod(REQUEST_METHOD);
             urlConnection.connect();
 
             if (urlConnection.getResponseCode() == 200) {
                 inputStream = urlConnection.getInputStream();
                 jsonResponse = readFromStream(inputStream);
             } else {
-                Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
+                Log.e(LOG_TAG, ERROR_RESPONSE_CODE + urlConnection.getResponseCode());
             }
         } catch (IOException e) {
-            Log.e(LOG_TAG, "Problem retrieving the JSON results.", e);
+            Log.e(LOG_TAG, PROBLEM_RETRIEVING_THE_JSON_RESULTS, e);
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -112,11 +129,11 @@ public final class DataUtils {
         try {
             JSONObject news = new JSONObject(dataJSON);
 
-            if (news.has("response")) {
-                JSONObject response = news.getJSONObject("response");
+            if (news.has(RESPONSE)) {
+                JSONObject response = news.getJSONObject(RESPONSE);
 
-                if (response.has("results")) {
-                    JSONArray result = response.getJSONArray("results");
+                if (response.has(RESULTS)) {
+                    JSONArray result = response.getJSONArray(RESULTS);
 
                     for (int i = 0; i < result.length(); i++) {
                         String section = "";
@@ -125,18 +142,18 @@ public final class DataUtils {
 
                         // single news
                         JSONObject singleNews = result.getJSONObject(i);
-                        if (singleNews.has("sectionName")) {
-                            section = singleNews.getString("sectionName");
+                        if (singleNews.has(SECTION_NAME)) {
+                            section = singleNews.getString(SECTION_NAME);
                         } else {
-                            section = "Section N/A";
+                            section = SECTION_N_A;
                         }
-                        if (singleNews.has("webTitle")) {
-                            title = singleNews.getString("webTitle");
+                        if (singleNews.has(WEB_TITLE)) {
+                            title = singleNews.getString(WEB_TITLE);
                         } else {
-                            title = "Title N/A";
+                            title = TITLE_N_A;
                         }
-                        if (singleNews.has("webUrl")) {
-                            webUrl = singleNews.getString("webUrl");
+                        if (singleNews.has(WEB_URL)) {
+                            webUrl = singleNews.getString(WEB_URL);
                         }
 
                         data.add(new Data(section, title, webUrl));
@@ -144,7 +161,7 @@ public final class DataUtils {
                 }
             }
         } catch (JSONException e) {
-            Log.e("DataUtils", "Problem parsing the data JSON results", e);
+            Log.e(DATA_UTILS, PROBLEM_PARSING_THE_DATA_JSON_RESULTS, e);
         }
 
         return data;
