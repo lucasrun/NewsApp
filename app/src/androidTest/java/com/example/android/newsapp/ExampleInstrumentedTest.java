@@ -1,4 +1,4 @@
-package com.example.android.booklistingapp;
+package com.example.android.newsapp;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

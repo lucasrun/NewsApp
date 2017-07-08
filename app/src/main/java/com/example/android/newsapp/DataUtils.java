@@ -1,4 +1,4 @@
-package com.example.android.booklistingapp;
+package com.example.android.newsapp;
 
 /**
  * Created by mhesah on 2017-07-06. QUERY UTILS FOR RECEIVING DATA FROM THE NET

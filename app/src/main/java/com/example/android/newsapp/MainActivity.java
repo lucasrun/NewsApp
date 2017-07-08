@@ -1,4 +1,4 @@
-package com.example.android.booklistingapp;
+package com.example.android.newsapp;
 
 import android.app.LoaderManager;
 import android.content.Context;
