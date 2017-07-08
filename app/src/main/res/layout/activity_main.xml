@@ -29,14 +29,14 @@
 
         <EditText
             android:id="@+id/editTV"
-            style="@style/generalView"
+            style="@style/editView"
             android:gravity="center"
             android:hint="@string/hint" />
 
         <Button
             android:id="@+id/buttonTV"
-            style="@style/generalView"
-            android:text="@string/refresh_button" />
+            style="@style/buttonView"
+            android:text="@string/search_button" />
 
         <ListView
             android:id="@+id/listTV"

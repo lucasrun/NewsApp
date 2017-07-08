@@ -46,7 +46,7 @@ public final class DataUtils {
     private static URL createUrl(String mKeyword) {
         URL url = null;
         try {
-            url = new URL("https://www.googleapis.com/books/v1/volumes?q=" + mKeyword + "&maxResults=10");
+            url = new URL("http://content.guardianapis.com/search?q=" + mKeyword + "&api-key=test");
         } catch (MalformedURLException e) {
             Log.e(LOG_TAG, "Problem building the URL ", e);
         }
@@ -110,48 +110,37 @@ public final class DataUtils {
         List<Data> data = new ArrayList<>();
 
         try {
-            JSONObject books = new JSONObject(dataJSON);
-            if (books.has("items")) {
-                JSONArray items = books.getJSONArray("items");
-                for (int i = 0; i < items.length(); i++) {
+            JSONObject news = new JSONObject(dataJSON);
 
-                    String title = "";
-                    String authors = "";
-                    String link = "";
-                    String description = "";
+            if (news.has("response")) {
+                JSONObject response = news.getJSONObject("response");
 
-                    // JSON single book
-                    JSONObject bookInfo = items.getJSONObject(i);
+                if (response.has("results")) {
+                    JSONArray result = response.getJSONArray("results");
 
-                    if (bookInfo.has("volumeInfo")) {
-                        JSONObject volumeInfo = bookInfo.getJSONObject("volumeInfo");
+                    for (int i = 0; i < result.length(); i++) {
+                        String section = "";
+                        String title = "";
+                        String webUrl = "";
 
-                        if (volumeInfo.has("title")) {
-                            title = volumeInfo.getString("title");
-                        } else title = "Title N/A";
-
-                        if (volumeInfo.has("description")) {
-                            description = volumeInfo.getString("description");
-                        } else description = "Description N/A";
-
-                        if (volumeInfo.has("infoLink")) {
-                            link = volumeInfo.getString("infoLink");
-                        } else link = "";
-
-                        if (volumeInfo.has("authors")) {
-                            JSONArray authorsArray = volumeInfo.getJSONArray("authors");
-                            for (int j = 0; j < authorsArray.length(); j++) {
-                                if (j == 0) {
-                                    authors += authorsArray.getString(j);
-                                } else {
-                                    authors += ", " + authorsArray.getString(j);
-                                }
-                            }
+                        // single news
+                        JSONObject singleNews = result.getJSONObject(i);
+                        if (singleNews.has("sectionName")) {
+                            section = singleNews.getString("sectionName");
                         } else {
-                            authors = "Authors N/A";
+                            section = "Section N/A";
                         }
+                        if (singleNews.has("webTitle")) {
+                            title = singleNews.getString("webTitle");
+                        } else {
+                            title = "Title N/A";
+                        }
+                        if (singleNews.has("webUrl")) {
+                            webUrl = singleNews.getString("webUrl");
+                        }
+
+                        data.add(new Data(section, title, webUrl));
                     }
-                    data.add(new Data(title, authors, link, description));
                 }
             }
         } catch (JSONException e) {

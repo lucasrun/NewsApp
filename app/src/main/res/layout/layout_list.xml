@@ -17,7 +17,7 @@
         style="@style/customView"/>
 
     <android.support.v4.widget.NestedScrollView
-        style="@style/customView">
+        style="@style/titleView">
 
         <TextView
             android:id="@+id/titleTV"
